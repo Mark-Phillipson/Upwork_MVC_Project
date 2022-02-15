@@ -1,0 +1,136 @@
+﻿@model IEnumerable<Upwork_MVC.Models.Agreement>
+
+@{
+    ViewBag.Title = "Agreements";
+}
+
+<h2>🤝 Agreements</h2>
+
+<table class="table table-bordered table-striped" id="table-agreements">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayName("Username")
+            </th>
+            <th>
+                @Html.DisplayName("Product Group Code")
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Product.ProductNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.EffectiveDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ExpirationDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProductPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.NewPrice)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserId)
+                </td>
+                <td title="@item.Product.ProductGroup.GroupDescription">
+                    @Html.DisplayFor(modelItem => item.Product.ProductGroup.GroupCode)
+                </td>
+                <td title="@item.Product.ProductDescription">
+                    @Html.DisplayFor(modelItem => item.Product.ProductNumber)
+                </td>
+                <td>
+                    @item.EffectiveDate.ToString("MM/dd/yyyy")
+                </td>
+                <td>
+                    @item.ExpirationDate.ToString("MM/dd/yyyy")
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NewPrice)
+                </td>
+                <td class="btn-group-vertical">
+                    <a href="#AgreementModalEdit" data-agreement-id="@item.Id" class="open-ModalEditAgreement btn btn-info btn-sm" data-toggle="modal" data-target="#AgreementModalEdit">
+                        Edit
+                    </a>
+                    <a href="#DeleteModal" data-agreement-id="@item.Id" class="open-ModalDelete btn btn-danger btn-sm" data-toggle="modal" data-target="#DeleteModal">
+                        Danger
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<p>
+    <!-- Trigger the modal with a button -->
+    <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#AgreementModalCreate">New Agreement</button>
+</p>
+
+@Html.Partial("CreateAgreementModal")
+@Html.Partial("EditAgreementModal")
+@Html.Partial("DeleteAgreementModal")
+
+
+
+
+@section Scripts
+    {
+
+
+    <script>
+        $(document).ready(function () {
+            $('#table-agreements').DataTable({
+                "order": [],
+                "ordering": true,
+                "buttons": true
+            });
+            $('input[type="search"]').focus();
+
+        });
+        $('.open-ModalDelete').on("click", function () {
+            var id = $(this).data('agreement-id');
+            console.log('Agreement Id:' + id);
+            $(".modal-body #AgreementId").val(id);
+        });
+        $('.open-ModalEditAgreement').on("click", function () {
+            var id = $(this).data('agreement-id');
+            console.log('Agreement Id:' + id);
+            $(".modal-body #AgreementId").val(id);
+            $.ajax({
+                type: "GET",
+                url: "/Agreements/GetAgreement/" + id,
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({ id: id }),
+                dataType: "html",
+                success: function (agreementResult) {
+                    var data = JSON.parse(agreementResult);
+                    $('.modal-body #UserId').val(data.Userid)
+                    $('.modal-body #ProductId').val(data.ProductId)
+                    var date = new Date(parseInt(data.EffectiveDate.substr(6)));
+                    $('.modal-body #EffectiveDate').val(date.toISOString().substr(5, 2) + '/' + date.toISOString().substr(8, 2) + '/' + date.toISOString().substr(0, 4))
+                    date = new Date(parseInt(data.ExpirationDate.substr(6)));
+                    $('.modal-body #ExpirationDate').val(date.toISOString().substr(5, 2) + '/' + date.toISOString().substr(8, 2) + '/' + date.toISOString().substr(0, 4))
+                    $('.modal-body #ProductPrice').val(data.ProductPrice)
+                    $('.modal-body #ProductPrice').val(data.ProductPrice)
+                    $('.modal-body #NewPrice').val(data.NewPrice)
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        });
+    </script>
+}
+

@@ -1,0 +1,62 @@
+﻿@using (Html.BeginForm("Edit", "Agreements", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <!-- Modal -->
+    <div id="AgreementModalEdit" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Edit Agreement</h4>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="AgreementId" id="AgreementId" />
+                    <input type="hidden" name="UserId" id="UserId" />
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="control-label col-md-4">Product</label>
+                            <div class="col-md-8">
+                                @Html.DropDownList("ProductId", null, "-", htmlAttributes: new { @class = "form-control", @required = "required", autofocus = "autofocus" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-4">Effective Date</label>
+                            <div class="col-md-8">
+                                <input minlength="10" maxlength="10" type="text" required name="EffectiveDate" id="EffectiveDate" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-4">Expiration Date</label>
+                            <div class="col-md-8">
+                                <input minlength="10" maxlength="10" type="text" required name="ExpirationDate" id="ExpirationDate" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-4">Product Price</label>
+                            <div class="col-md-8">
+                                <input type="number" required min="0" value="0" step="any" name="ProductPrice" id="ProductPrice" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-4">New Price</label>
+                            <div class="col-md-8">
+                                <input type="number" required min="0" value="0" step="any" name="NewPrice" id="NewPrice" class="form-control" />
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success btn-lg">Save</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
